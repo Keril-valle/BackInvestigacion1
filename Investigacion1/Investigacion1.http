@@ -4,3 +4,24 @@ GET {{Investigacion1_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+POST {{Investigacion1_HostAddress}}/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Juan Perez",
+  "email": "juan@example.com",
+  "password": "123456"
+}
+
+###
+
+POST {{Investigacion1_HostAddress}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@example.com",
+  "password": "123456"
+}
+
+###
