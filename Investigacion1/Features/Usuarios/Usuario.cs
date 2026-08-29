@@ -10,5 +10,5 @@ public class Usuario
 
     public string Password { get; set; } = string.Empty;
 
-    public string Role { get; set; } = Usuarios.Role.User;
+    public string Role { get; set; } = Usuarios.Role.Subscription_L1;
 }
