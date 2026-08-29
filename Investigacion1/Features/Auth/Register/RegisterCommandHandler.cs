@@ -35,6 +35,8 @@ public static class RegisterCommandHandler
             Email = command.Email,
             Password = BCrypt.Net.BCrypt.HashPassword(command.Password, 15),
             Role = Role.Subscription_L1,
+            IsActive = true,
+            SubscriptionExpirationDate = DateTime.UtcNow.AddYears(1),
         };
 
         db.Usuarios.Add(usuario);
