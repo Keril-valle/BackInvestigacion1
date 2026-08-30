@@ -1,6 +1,7 @@
 using System.Text;
 using Investigacion1.Features.Auth;
 using Investigacion1.Features.Auth.Login;
+using Investigacion1.Features.Auth.Refresh;
 using Investigacion1.Features.Auth.Register;
 using Investigacion1.Features.WeatherForecast.GetWeatherForecast;
 using Investigacion1.Persistence;
@@ -55,5 +56,6 @@ app.UseAuthorization();
 app.MapGetWeatherForecastEndpoint();
 app.MapRegisterEndpoint();
 app.MapLoginEndpoint();
+app.MapRefreshEndpoint();
 
 app.Run();

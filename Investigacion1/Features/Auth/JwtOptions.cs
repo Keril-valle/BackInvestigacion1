@@ -11,4 +11,6 @@ public class JwtOptions
     public string Audience { get; set; } = "Investigacion1";
 
     public int ExpirationHours { get; set; } = 1;
+
+    public int RefreshTokenExpirationDays { get; set; } = 14;
 }
