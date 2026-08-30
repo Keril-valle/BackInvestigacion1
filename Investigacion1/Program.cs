@@ -1,5 +1,6 @@
 using System.Text;
 using Investigacion1.Features.Auth;
+using Investigacion1.Features.Auth.AdminRegister;
 using Investigacion1.Features.Auth.Login;
 using Investigacion1.Features.Auth.Refresh;
 using Investigacion1.Features.Auth.Register;
@@ -64,6 +65,9 @@ app.UseAuthorization();
 
 app.MapGetWeatherForecastEndpoint();
 app.MapRegisterEndpoint();
+app.MapAdminRegisterEndpoint();
+app.MapGet("/debug/users", (Investigacion1.Persistence.AppDbContext db) =>
+    db.Usuarios.Select(u => new { u.Id, u.Email, u.Role, u.IsActive, u.Nombre }).ToList());
 app.MapLoginEndpoint();
 app.MapRefreshEndpoint();
 
