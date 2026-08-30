@@ -3,6 +3,10 @@ using Investigacion1.Features.Auth;
 using Investigacion1.Features.Auth.Login;
 using Investigacion1.Features.Auth.Refresh;
 using Investigacion1.Features.Auth.Register;
+using Investigacion1.Features.Usuarios.GetCurrentUser;
+using Investigacion1.Features.Usuarios.GetUserById;
+using Investigacion1.Features.Usuarios.GetUsers;
+using Investigacion1.Features.Usuarios.Logout;
 using Investigacion1.Features.WeatherForecast.GetWeatherForecast;
 using Investigacion1.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -39,9 +43,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", p => p.RequireRole(Investigacion1.Features.Usuarios.Role.Admin));
+});
 
 var app = builder.Build();
+
+// Seed: crear Admin inicial si no existe ninguno
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    if (!db.Usuarios.Any(u => u.Role == Investigacion1.Features.Usuarios.Role.Admin))
+    {
+        db.Usuarios.Add(new Investigacion1.Features.Usuarios.Usuario
+        {
+            Nombre = "Admin",
+            Email = "admin@example.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("admin123", 15),
+            Role = Investigacion1.Features.Usuarios.Role.Admin,
+            IsActive = true,
+            SubscriptionExpirationDate = DateTime.UtcNow.AddYears(1),
+        });
+        db.SaveChanges();
+    }
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -57,5 +83,9 @@ app.MapGetWeatherForecastEndpoint();
 app.MapRegisterEndpoint();
 app.MapLoginEndpoint();
 app.MapRefreshEndpoint();
+app.MapLogoutEndpoint();
+app.MapGetCurrentUserEndpoint();
+app.MapGetUsersEndpoint();
+app.MapGetUserByIdEndpoint();
 
 app.Run();
