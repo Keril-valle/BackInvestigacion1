@@ -17,8 +17,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("La cadena de conexión 'DefaultConnection' no está definida.");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseInMemoryDatabase("Investigacion1Db"));
+    options.UseNpgsql(connectionString));
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 builder.Services.AddScoped<JwtTokenService>();
@@ -50,23 +53,10 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Seed: crear Admin inicial si no existe ninguno
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (!db.Usuarios.Any(u => u.Role == Investigacion1.Features.Usuarios.Role.Admin))
-    {
-        db.Usuarios.Add(new Investigacion1.Features.Usuarios.Usuario
-        {
-            Nombre = "Admin",
-            Email = "admin@example.com",
-            Password = BCrypt.Net.BCrypt.HashPassword("admin123", 15),
-            Role = Investigacion1.Features.Usuarios.Role.Admin,
-            IsActive = true,
-            SubscriptionExpirationDate = DateTime.UtcNow.AddYears(1),
-        });
-        db.SaveChanges();
-    }
+    db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
