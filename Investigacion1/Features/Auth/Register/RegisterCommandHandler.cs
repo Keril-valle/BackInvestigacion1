@@ -40,6 +40,8 @@ public static class RegisterCommandHandler
             Paciente = new Paciente
             {
                 Nombre = command.Nombre,
+                Telefono = command.Telefono,
+                FechaNacimiento = command.FechaNacimiento,
             },
         };
 
