@@ -5,6 +5,7 @@ using Investigacion1.Features.Auth.Login;
 using Investigacion1.Features.Auth.Refresh;
 using Investigacion1.Features.Auth.Register;
 using Investigacion1.Features.Clinica.Citas.CrearCita;
+using Investigacion1.Features.Clinica.Citas.GetCitas;
 using Investigacion1.Features.Clinica.Dermatologos.GetDermatologos;
 using Investigacion1.Features.Clinica.Servicios.GetServicios;
 using Investigacion1.Features.Usuarios.GetCurrentUser;
@@ -104,5 +105,6 @@ app.MapGetUserByIdEndpoint();
 app.MapGetServiciosEndpoint();
 app.MapGetDermatologosEndpoint();
 app.MapCrearCitaEndpoint();
+app.MapGetCitasEndpoint();
 
 app.Run();

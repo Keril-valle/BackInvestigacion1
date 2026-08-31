@@ -18,8 +18,11 @@ public static class RegisterCommandHandler
         if (string.IsNullOrWhiteSpace(command.Email) || !Regex.IsMatch(command.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             errors["email"] = ["El email no es válido"];
 
-        if (string.IsNullOrWhiteSpace(command.Password) || command.Password.Length < 6)
-            errors["password"] = ["La contraseña debe tener al menos 6 caracteres"];
+        if (string.IsNullOrWhiteSpace(command.Password)
+            || command.Password.Length < 6
+            || !Regex.IsMatch(command.Password, @"[A-Za-z]")
+            || !Regex.IsMatch(command.Password, @"\d"))
+            errors["password"] = ["La contraseña debe tener al menos 6 caracteres, una letra y un número"];
 
         if (errors.Count > 0)
             return Results.ValidationProblem(errors);
