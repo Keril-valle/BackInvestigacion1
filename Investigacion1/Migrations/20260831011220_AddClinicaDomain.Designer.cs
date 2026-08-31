@@ -3,6 +3,7 @@ using System;
 using Investigacion1.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Investigacion1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260831011220_AddClinicaDomain")]
+    partial class AddClinicaDomain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,15 +110,9 @@ namespace Investigacion1.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NumeroLicencia")
-                        .IsUnique();
-
-                    b.HasIndex("UsuarioId")
                         .IsUnique();
 
                     b.ToTable("Dermatologos", (string)null);
@@ -127,7 +124,12 @@ namespace Investigacion1.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateOnly?>("FechaNacimiento")
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateOnly>("FechaNacimiento")
                         .HasColumnType("date");
 
                     b.Property<string>("Nombre")
@@ -139,12 +141,9 @@ namespace Investigacion1.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioId")
+                    b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("Pacientes", (string)null);
@@ -244,6 +243,9 @@ namespace Investigacion1.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Nombre")
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
@@ -309,28 +311,6 @@ namespace Investigacion1.Migrations
                     b.Navigation("Tratamiento");
                 });
 
-            modelBuilder.Entity("Investigacion1.Features.Clinica.Dermatologo", b =>
-                {
-                    b.HasOne("Investigacion1.Features.Usuarios.Usuario", "Usuario")
-                        .WithOne("Dermatologo")
-                        .HasForeignKey("Investigacion1.Features.Clinica.Dermatologo", "UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Investigacion1.Features.Clinica.Paciente", b =>
-                {
-                    b.HasOne("Investigacion1.Features.Usuarios.Usuario", "Usuario")
-                        .WithOne("Paciente")
-                        .HasForeignKey("Investigacion1.Features.Clinica.Paciente", "UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
             modelBuilder.Entity("Investigacion1.Features.Usuarios.RefreshToken", b =>
                 {
                     b.HasOne("Investigacion1.Features.Usuarios.Usuario", "Usuario")
@@ -365,13 +345,6 @@ namespace Investigacion1.Migrations
             modelBuilder.Entity("Investigacion1.Features.Clinica.Tratamiento", b =>
                 {
                     b.Navigation("CitaTratamientos");
-                });
-
-            modelBuilder.Entity("Investigacion1.Features.Usuarios.Usuario", b =>
-                {
-                    b.Navigation("Dermatologo");
-
-                    b.Navigation("Paciente");
                 });
 #pragma warning restore 612, 618
         }

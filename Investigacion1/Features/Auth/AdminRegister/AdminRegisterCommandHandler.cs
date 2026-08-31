@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using Investigacion1.Features.Clinica;
 using Investigacion1.Features.Usuarios;
 using Investigacion1.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,9 @@ public static class AdminRegisterCommandHandler
         if (string.IsNullOrWhiteSpace(command.Password) || command.Password.Length < 6)
             errors["password"] = ["La contraseña debe tener al menos 6 caracteres"];
 
+        if (string.IsNullOrWhiteSpace(command.NumeroLicencia))
+            errors["numeroLicencia"] = ["El número de licencia es requerido"];
+
         if (errors.Count > 0)
             return Results.ValidationProblem(errors);
 
@@ -40,14 +44,24 @@ public static class AdminRegisterCommandHandler
             return Results.BadRequest(new { message = "Usuario ya existe" });
         }
 
+        var licenciaExistente = await db.Dermatologos.AnyAsync(d => d.NumeroLicencia == command.NumeroLicencia);
+        if (licenciaExistente)
+        {
+            return Results.BadRequest(new { message = "El número de licencia ya está registrado" });
+        }
+
         var usuario = new Usuario
         {
-            Nombre = command.Nombre,
             Email = command.Email,
             Password = BCrypt.Net.BCrypt.HashPassword(command.Password, 15),
             Role = Usuarios.Role.Admin,
             IsActive = true,
             SubscriptionExpirationDate = DateTime.UtcNow.AddYears(1),
+            Dermatologo = new Dermatologo
+            {
+                Nombre = command.Nombre,
+                NumeroLicencia = command.NumeroLicencia,
+            },
         };
 
         db.Usuarios.Add(usuario);
@@ -56,9 +70,10 @@ public static class AdminRegisterCommandHandler
         return Results.Ok(new
         {
             id = usuario.Id,
-            nombre = usuario.Nombre,
+            nombre = usuario.Dermatologo?.Nombre,
             email = usuario.Email,
             role = usuario.Role,
+            numeroLicencia = usuario.Dermatologo?.NumeroLicencia,
         });
     }
 }

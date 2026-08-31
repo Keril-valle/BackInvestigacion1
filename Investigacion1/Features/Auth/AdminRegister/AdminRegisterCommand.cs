@@ -15,4 +15,7 @@ public class AdminRegisterCommand
     [Required]
     [MinLength(6)]
     public string Password { get; set; } = string.Empty;
+
+    [Required]
+    public string NumeroLicencia { get; set; } = string.Empty;
 }
