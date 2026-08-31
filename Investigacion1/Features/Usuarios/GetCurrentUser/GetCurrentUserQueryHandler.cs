@@ -22,7 +22,9 @@ public static class GetCurrentUserQueryHandler
             .Select(u => new
             {
                 u.Id,
-                u.Nombre,
+                Nombre = u.Role == Investigacion1.Features.Usuarios.Role.Admin
+                    ? (string?)u.Dermatologo!.Nombre
+                    : (string?)u.Paciente!.Nombre,
                 u.Email,
                 u.Role,
                 u.IsActive,

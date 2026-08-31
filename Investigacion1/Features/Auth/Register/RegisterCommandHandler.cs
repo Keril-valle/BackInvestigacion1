@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Investigacion1.Features.Clinica;
 using Investigacion1.Features.Usuarios;
 using Investigacion1.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -31,12 +32,15 @@ public static class RegisterCommandHandler
 
         var usuario = new Usuario
         {
-            Nombre = command.Nombre,
             Email = command.Email,
             Password = BCrypt.Net.BCrypt.HashPassword(command.Password, 15),
             Role = Role.Subscription_L1,
             IsActive = true,
             SubscriptionExpirationDate = DateTime.UtcNow.AddYears(1),
+            Paciente = new Paciente
+            {
+                Nombre = command.Nombre,
+            },
         };
 
         db.Usuarios.Add(usuario);
@@ -45,7 +49,7 @@ public static class RegisterCommandHandler
         return Results.Ok(new
         {
             id = usuario.Id,
-            nombre = usuario.Nombre,
+            nombre = usuario.Paciente?.Nombre,
             email = usuario.Email,
             role = usuario.Role,
         });

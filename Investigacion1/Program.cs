@@ -74,7 +74,14 @@ app.MapGetWeatherForecastEndpoint();
 app.MapRegisterEndpoint();
 app.MapAdminRegisterEndpoint();
 app.MapGet("/debug/users", (Investigacion1.Persistence.AppDbContext db) =>
-    db.Usuarios.Select(u => new { u.Id, u.Email, u.Role, u.IsActive, u.Nombre }).ToList());
+    db.Usuarios.Select(u => new
+    {
+        u.Id,
+        u.Email,
+        u.Role,
+        u.IsActive,
+        Nombre = u.Role == "Admin" ? u.Dermatologo!.Nombre : u.Paciente!.Nombre,
+    }).ToList());
 app.MapLoginEndpoint();
 app.MapRefreshEndpoint();
 app.MapLogoutEndpoint();
