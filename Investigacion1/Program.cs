@@ -4,6 +4,10 @@ using Investigacion1.Features.Auth.AdminRegister;
 using Investigacion1.Features.Auth.Login;
 using Investigacion1.Features.Auth.Refresh;
 using Investigacion1.Features.Auth.Register;
+using Investigacion1.Features.Clinica.Citas.CrearCita;
+using Investigacion1.Features.Clinica.Citas.GetCitas;
+using Investigacion1.Features.Clinica.Dermatologos.GetDermatologos;
+using Investigacion1.Features.Clinica.Servicios.GetServicios;
 using Investigacion1.Features.Usuarios.GetCurrentUser;
 using Investigacion1.Features.Usuarios.GetUserById;
 using Investigacion1.Features.Usuarios.GetUsers;
@@ -47,6 +51,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", p => p.RequireRole(Investigacion1.Features.Usuarios.Role.Admin));
@@ -66,6 +78,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -88,5 +102,9 @@ app.MapLogoutEndpoint();
 app.MapGetCurrentUserEndpoint();
 app.MapGetUsersEndpoint();
 app.MapGetUserByIdEndpoint();
+app.MapGetServiciosEndpoint();
+app.MapGetDermatologosEndpoint();
+app.MapCrearCitaEndpoint();
+app.MapGetCitasEndpoint();
 
 app.Run();

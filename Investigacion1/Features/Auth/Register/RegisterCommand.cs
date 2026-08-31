@@ -15,4 +15,8 @@ public class RegisterCommand
     [Required]
     [MinLength(6)]
     public string Password { get; set; } = string.Empty;
+
+    public string? Telefono { get; set; }
+
+    public DateOnly? FechaNacimiento { get; set; }
 }
