@@ -71,3 +71,38 @@ Authorization: Bearer {{token}}
 {
   "subscriptionExpirationDate": "2027-01-01T00:00:00Z"
 }
+
+### Editar dermatólogo (solo Admin)
+
+PUT {{Investigacion1_HostAddress}}/dermatologos/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Dra. García",
+  "especialidad": "Dermatología clínica",
+  "numeroLicencia": "12345"
+}
+
+### Editar servicio, incluye inhabilitar/reactivar con "activo" (solo Admin)
+
+PUT {{Investigacion1_HostAddress}}/servicios/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Consulta general",
+  "duracionMinutos": 30,
+  "precio": 25000,
+  "activo": false
+}
+
+### Inhabilitar dermatólogo: se hace vía su Usuario (usuarioId que devuelve GET /dermatologos siendo Admin)
+
+PATCH {{Investigacion1_HostAddress}}/users/1/is-active
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "isActive": false
+}
