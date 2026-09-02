@@ -25,3 +25,84 @@ Content-Type: application/json
 }
 
 ###
+### Login como admin de prueba (credenciales del equipo)
+
+POST {{Investigacion1_HostAddress}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "dra.garcia@dermovita.com",
+  "password": "Garcia123"
+}
+
+### Crear servicio (solo Admin/Dermatólogo)
+
+POST {{Investigacion1_HostAddress}}/servicios
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Consulta general",
+  "duracionMinutos": 30,
+  "precio": 25000
+}
+
+### Historial de un paciente (Admin ve cualquiera; Paciente solo el propio)
+
+GET {{Investigacion1_HostAddress}}/pacientes/00000000-0000-0000-0000-000000000000/historial
+Authorization: Bearer {{token}}
+
+### Rutas Admin de gestión de suscripción (solo Admin)
+
+PATCH {{Investigacion1_HostAddress}}/users/1/is-active
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "isActive": false
+}
+
+###
+
+PATCH {{Investigacion1_HostAddress}}/users/1/subscription-expiration
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "subscriptionExpirationDate": "2027-01-01T00:00:00Z"
+}
+
+### Editar dermatólogo (solo Admin)
+
+PUT {{Investigacion1_HostAddress}}/dermatologos/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Dra. García",
+  "especialidad": "Dermatología clínica",
+  "numeroLicencia": "12345"
+}
+
+### Editar servicio, incluye inhabilitar/reactivar con "activo" (solo Admin)
+
+PUT {{Investigacion1_HostAddress}}/servicios/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nombre": "Consulta general",
+  "duracionMinutos": 30,
+  "precio": 25000,
+  "activo": false
+}
+
+### Inhabilitar dermatólogo: se hace vía su Usuario (usuarioId que devuelve GET /dermatologos siendo Admin)
+
+PATCH {{Investigacion1_HostAddress}}/users/1/is-active
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "isActive": false
+}
